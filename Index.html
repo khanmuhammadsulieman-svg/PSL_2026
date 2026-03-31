@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBL PSL 2026 Schedule</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1a0533, #2d0a5a, #1a0533);
+    padding: 20px;
+    text-align: center;
+    border-bottom: 3px solid #7c3aed;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+  }
+
+  header h1 {
+    font-size: 1.8em;
+    color: #fff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  header h1 span { color: #c4b5fd; }
+
+  #clock {
+    font-size: 1.1em;
+    color: #c4b5fd;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  #featured-match {
+    margin: 20px auto;
+    max-width: 700px;
+    padding: 0 16px;
+  }
+
+  .featured-card {
+    background: linear-gradient(135deg, #1e1040, #2d1060);
+    border: 2px solid #7c3aed;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(124,58,237,0.3);
+  }
+
+  .featured-label {
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #a78bfa;
+    margin-bottom: 8px;
+  }
+
+  .featured-teams {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: #fff;
+    margin: 8px 0;
+  }
+
+  .featured-vs { color: #7c3aed; margin: 0 10px; }
+
+  .featured-info {
+    font-size: 0.9em;
+    color: #c4b5fd;
+    margin-top: 6px;
+  }
+
+  .featured-status {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .status-live { background: #dc2626; color: #fff; animation: pulse 1.2s infinite; }
+  .status-upcoming { background: #059669; color: #fff; }
+  .status-today { background: #d97706; color: #fff; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 1.1em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a78bfa;
+    margin: 24px 0 12px;
+  }
+
+  .schedule-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 12px 40px;
+  }
+
+  .match-card {
+    background: #111128;
+    border: 1px solid #2a2a4a;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.15s, border-color 0.15s;
+    cursor: default;
+  }
+
+  .match-card:hover {
+    transform: translateX(4px);
+    border-color: #7c3aed;
+  }
+
+  /* Multan Sultans highlight */
+  .match-card.multan {
+    background: linear-gradient(135deg, #0a2a0f, #0f3a14);
+    border: 1.5px solid #22c55e;
+    box-shadow: 0 0 12px rgba(34,197,94,0.2);
+  }
+
+  .match-card.multan:hover {
+    border-color: #4ade80;
+    box-shadow: 0 0 20px rgba(34,197,94,0.35);
+  }
+
+  .multan-badge {
+    font-size: 0.65em;
+    background: #16a34a;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .match-left { flex: 1; }
+
+  .match-num {
+    font-size: 0.7em;
+    color: #6b7280;
+    margin-bottom: 2px;
+  }
+
+  .match-teams {
+    font-size: 1em;
+    font-weight: 600;
+    color: #e5e7eb;
+  }
+
+  .match-card.multan .match-teams { color: #bbf7d0; }
+
+  .match-right { text-align: right; }
+
+  .match-date {
+    font-size: 0.78em;
+    color: #9ca3af;
+  }
+
+  .match-time {
+    font-size: 0.9em;
+    font-weight: 700;
+    color: #c4b5fd;
+    margin-top: 2px;
+  }
+
+  .match-card.multan .match-time { color: #4ade80; }
+
+  .match-venue {
+    font-size: 0.7em;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  .card-done {
+    opacity: 0.45;
+    filter: grayscale(0.5);
+  }
+
+  .phase-divider {
+    text-align: center;
+    margin: 18px 0 10px;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .phase-divider::before, .phase-divider::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid #1f2937;
+  }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 0 auto 16px;
+    font-size: 0.75em;
+    color: #9ca3af;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-multan { background: #22c55e; }
+  .dot-other { background: #4b5563; }
+
+  .no-match {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+    font-size: 0.95em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>HBL PSL <span>2026</span> Schedule</h1>
+  <div id="clock">--</div>
+</header>
+
+<div id="featured-match"></div>
+
+<div class="schedule-container">
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-multan"></div> Multan Sultans</div>
+    <div class="legend-item"><div class="legend-dot dot-other"></div> Other Teams</div>
+  </div>
+  <div id="schedule-list"></div>
+</div>
+
+<script>
+// All PSL 2026 matches — times in PKT (UTC+5)
+const matches = [
+  // League Stage
+  { num:1,  date:'2026-03-26', time:'20:00', t1:'Lahore Qalandars',    t2:'Hyderabad Kingsmen', venue:'Gaddafi Stadium, Lahore' },
+  { num:2,  date:'2026-03-27', time:'20:00', t1:'Quetta Gladiators',   t2:'Karachi Kings',      venue:'Gaddafi Stadium, Lahore' },
+  { num:3,  date:'2026-03-28', time:'14:30', t1:'Peshawar Zalmi',      t2:'Rawalpindi Pindiz',  venue:'Imran Khan Stadium, Peshawar' },
+  { num:4,  date:'2026-03-28', time:'20:00', t1:'Multan Sultans',      t2:'Islamabad United',   venue:'Gaddafi Stadium, Lahore' },
+  { num:5,  date:'2026-03-29', time:'14:30', t1:'Quetta Gladiators',   t2:'Hyderabad Kingsmen', venue:'Gaddafi Stadium, Lahore' },
+  { num:6,  date:'2026-03-29', time:'20:00', t1:'Lahore Qalandars',    t2:'Karachi Kings',      venue:'Gaddafi Stadium, Lahore' },
+  { num:7,  date:'2026-03-31', time:'20:00', t1:'Islamabad United',    t2:'Peshawar Zalmi',     venue:'Rawalpindi Cricket Stadium' },
+  { num:8,  date:'2026-04-01', time:'20:00', t1:'Multan Sultans',      t2:'Hyderabad Kingsmen', venue:'Multan Cricket Stadium' },
+  { num:9,  date:'2026-04-02', time:'14:30', t1:'Islamabad United',    t2:'Quetta Gladiators',  venue:'Rawalpindi Cricket Stadium' },
+  { num:10, date:'2026-04-02', time:'20:00', t1:'Rawalpindi Pindiz',   t2:'Karachi Kings',      venue:'Rawalpindi Cricket Stadium' },
+  { num:11, date:'2026-04-03', time:'20:00', t1:'Multan Sultans',      t2:'Lahore Qalandars',   venue:'Multan Cricket Stadium' },
+  { num:12, date:'2026-04-04', time:'20:00', t1:'Rawalpindi Pindiz',   t2:'Islamabad United',   venue:'Rawalpindi Cricket Stadium' },
+  { num:13, date:'2026-04-05', time:'20:00', t1:'Multan Sultans',      t2:'Quetta Gladiators',  venue:'Multan Cricket Stadium' },
+  { num:14, date:'2026-04-06', time:'20:00', t1:'Multan Sultans',      t2:'Rawalpindi Pindiz',  venue:'Multan Cricket Stadium' },
+  { num:15, date:'2026-04-08', time:'20:00', t1:'Hyderabad Kingsmen',  t2:'Peshawar Zalmi',     venue:'National Bank Stadium, Karachi' },
+  { num:16, date:'2026-04-09', time:'14:30', t1:'Lahore Qalandars',    t2:'Islamabad United',   venue:'Iqbal Stadium, Faisalabad' },
+  { num:17, date:'2026-04-09', time:'20:00', t1:'Karachi Kings',       t2:'Peshawar Zalmi',     venue:'National Bank Stadium, Karachi' },
+  { num:18, date:'2026-04-10', time:'20:00', t1:'Quetta Gladiators',   t2:'Rawalpindi Pindiz',  venue:'National Bank Stadium, Karachi' },
+  { num:19, date:'2026-04-11', time:'14:30', t1:'Peshawar Zalmi',      t2:'Lahore Qalandars',   venue:'Iqbal Stadium, Faisalabad' },
+  { num:20, date:'2026-04-11', time:'20:00', t1:'Karachi Kings',       t2:'Hyderabad Kingsmen', venue:'National Bank Stadium, Karachi' },
+  { num:21, date:'2026-04-12', time:'20:00', t1:'Hyderabad Kingsmen',  t2:'Islamabad United',   venue:'National Bank Stadium, Karachi' },
+  { num:22, date:'2026-04-13', time:'20:00', t1:'Peshawar Zalmi',      t2:'Multan Sultans',     venue:'Iqbal Stadium, Faisalabad' },
+  { num:23, date:'2026-04-15', time:'20:00', t1:'Peshawar Zalmi',      t2:'Quetta Gladiators',  venue:'Iqbal Stadium, Faisalabad' },
+  { num:24, date:'2026-04-16', time:'14:30', t1:'Hyderabad Kingsmen',  t2:'Rawalpindi Pindiz',  venue:'Iqbal Stadium, Faisalabad' },
+  { num:25, date:'2026-04-16', time:'20:00', t1:'Karachi Kings',       t2:'Islamabad United',   venue:'National Bank Stadium, Karachi' },
+  { num:26, date:'2026-04-17', time:'20:00', t1:'Lahore Qalandars',    t2:'Quetta Gladiators',  venue:'Iqbal Stadium, Faisalabad' },
+  { num:27, date:'2026-04-18', time:'20:00', t1:'Lahore Qalandars',    t2:'Rawalpindi Pindiz',  venue:'Iqbal Stadium, Faisalabad' },
+  { num:28, date:'2026-04-19', time:'14:30', t1:'Multan Sultans',      t2:'Karachi Kings',      venue:'Gaddafi Stadium, Lahore' },
+  { num:29, date:'2026-04-19', time:'20:00', t1:'Quetta Gladiators',   t2:'Hyderabad Kingsmen', venue:'Gaddafi Stadium, Lahore' },
+  { num:30, date:'2026-04-21', time:'14:30', t1:'Lahore Qalandars',    t2:'Quetta Gladiators',  venue:'Gaddafi Stadium, Lahore' },
+  { num:31, date:'2026-04-21', time:'20:00', t1:'Rawalpindi Pindiz',   t2:'Multan Sultans',     venue:'Rawalpindi Cricket Stadium' },
+  { num:32, date:'2026-04-22', time:'14:30', t1:'Karachi Kings',       t2:'Hyderabad Kingsmen', venue:'Gaddafi Stadium, Lahore' },
+  { num:33, date:'2026-04-22', time:'20:00', t1:'Peshawar Zalmi',      t2:'Multan Sultans',     venue:'Rawalpindi Cricket Stadium' },
+  { num:34, date:'2026-04-23', time:'14:30', t1:'Rawalpindi Pindiz',   t2:'Islamabad United',   venue:'Rawalpindi Cricket Stadium' },
+  { num:35, date:'2026-04-23', time:'20:00', t1:'Lahore Qalandars',    t2:'Karachi Kings',      venue:'Gaddafi Stadium, Lahore' },
+  { num:36, date:'2026-04-24', time:'20:00', t1:'Islamabad United',    t2:'Peshawar Zalmi',     venue:'Gaddafi Stadium, Lahore' },
+  { num:37, date:'2026-04-25', time:'14:30', t1:'Quetta Gladiators',   t2:'Karachi Kings',      venue:'Gaddafi Stadium, Lahore' },
+  { num:38, date:'2026-04-25', time:'20:00', t1:'Lahore Qalandars',    t2:'Hyderabad Kingsmen', venue:'Gaddafi Stadium, Lahore' },
+  { num:39, date:'2026-04-26', time:'14:30', t1:'Rawalpindi Pindiz',   t2:'Peshawar Zalmi',     venue:'Rawalpindi Cricket Stadium' },
+  { num:40, date:'2026-04-26', time:'20:00', t1:'Islamabad United',    t2:'Multan Sultans',     venue:'Rawalpindi Cricket Stadium' },
+  // Playoffs
+  { num:41, date:'2026-04-28', time:'20:00', t1:'Qualifier',           t2:'(1st vs 2nd)',       venue:'Rawalpindi Cricket Stadium', playoff:true },
+  { num:42, date:'2026-04-29', time:'20:00', t1:'Eliminator 1',        t2:'(3rd vs 4th)',       venue:'Gaddafi Stadium, Lahore', playoff:true },
+  { num:43, date:'2026-05-01', time:'20:00', t1:'Eliminator 2',        t2:'(Winner E1 vs Loser Q)', venue:'Gaddafi Stadium, Lahore', playoff:true },
+  { num:44, date:'2026-05-03', time:'20:00', t1:'🏆 FINAL',            t2:'',                   venue:'Gaddafi Stadium, Lahore', playoff:true },
+];
+
+const MULTAN = 'Multan Sultans';
+
+function hasMultan(m) {
+  return m.t1 === MULTAN || m.t2 === MULTAN;
+}
+
+// Get current time in PKT (UTC+5)
+function nowPKT() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utc + 5 * 3600000);
+}
+
+function matchDateTime(m) {
+  const [h, min] = m.time.split(':').map(Number);
+  const [y, mo, d] = m.date.split('-').map(Number);
+  return new Date(y, mo - 1, d, h, min);
+}
+
+// PKT date object
+function pktDateObj(m) {
+  return matchDateTime(m); // stored as PKT
+}
+
+function isLive(m) {
+  const now = nowPKT();
+  const start = matchDateTime(m);
+  const end = new Date(start.getTime() + 3.5 * 3600000); // ~3.5 hrs
+  return now >= start && now <= end;
+}
+
+function isUpcoming(m) {
+  const now = nowPKT();
+  const start = matchDateTime(m);
+  return start > now;
+}
+
+function isPast(m) {
+  const now = nowPKT();
+  const end = new Date(matchDateTime(m).getTime() + 3.5 * 3600000);
+  return now > end;
+}
+
+function isToday(m) {
+  const now = nowPKT();
+  const [y, mo, d] = m.date.split('-').map(Number);
+  return now.getFullYear() === y && now.getMonth() === mo - 1 && now.getDate() === d;
+}
+
+function formatDate(dateStr) {
+  const [y, mo, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, mo - 1, d);
+  return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+function formatTime12(time) {
+  const [h, m] = time.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ampm} PKT`;
+}
+
+function updateClock() {
+  const now = nowPKT();
+  document.getElementById('clock').textContent =
+    now.toLocaleString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric',
+      hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' (PKT)';
+}
+
+function getFeatured() {
+  // Find live match first
+  const live = matches.find(isLive);
+  if (live) return { match: live, status: 'live' };
+
+  // Next match today
+  const todayUpcoming = matches.find(m => isToday(m) && isUpcoming(m));
+  if (todayUpcoming) return { match: todayUpcoming, status: 'today' };
+
+  // Next upcoming match
+  const next = matches.find(isUpcoming);
+  if (next) return { match: next, status: 'upcoming' };
+
+  return null;
+}
+
+function renderFeatured() {
+  const el = document.getElementById('featured-match');
+  const f = getFeatured();
+
+  if (!f) {
+    el.innerHTML = `<div class="featured-card"><div class="featured-label">PSL 2026</div>
+      <div class="featured-teams" style="font-size:1.1em">Tournament Completed 🏆</div>
+      <div class="featured-info">Congratulations to the Champions!</div></div>`;
+    return;
+  }
+
+  const { match: m, status } = f;
+  const isMul = hasMultan(m);
+  const labelMap = { live: '🔴 LIVE NOW', today: '⏰ NEXT MATCH TODAY', upcoming: '📅 NEXT UPCOMING MATCH' };
+  const statusClass = { live: 'status-live', today: 'status-today', upcoming: 'status-upcoming' };
+  const statusText = { live: '● LIVE', today: 'Today', upcoming: 'Upcoming' };
+
+  const teams = m.t2 ? `${m.t1} <span class="featured-vs">vs</span> ${m.t2}` : m.t1;
+  const border = isMul ? 'border-color:#22c55e; box-shadow:0 0 30px rgba(34,197,94,0.3);' : '';
+
+  el.innerHTML = `
+    <div class="featured-card" style="${border}">
+      <div class="featured-label">${labelMap[status]} — Match ${m.num}</div>
+      <div class="featured-teams">${teams}${isMul ? '<span class="multan-badge">⭐ Your Team</span>' : ''}</div>
+      <div class="featured-info">📅 ${formatDate(m.date)} &nbsp;|&nbsp; 🕐 ${formatTime12(m.time)}</div>
+      <div class="featured-info">📍 ${m.venue}</div>
+      <div><span class="featured-status ${statusClass[status]}">${statusText[status]}</span></div>
+    </div>`;
+}
+
+function renderSchedule() {
+  const container = document.getElementById('schedule-list');
+  let html = '';
+  let inPlayoffs = false;
+
+  matches.forEach(m => {
+    if (m.playoff && !inPlayoffs) {
+      inPlayoffs = true;
+      html += `<div class="phase-divider">🏆 Playoff Stage</div>`;
+    }
+
+    const multan = hasMultan(m);
+    const past = isPast(m);
+    const live = isLive(m);
+
+    let extraClass = multan ? ' multan' : '';
+    if (past) extraClass += ' card-done';
+
+    let statusBadge = '';
+    if (live) statusBadge = `<span class="featured-status status-live" style="font-size:0.65em;padding:2px 8px;">● LIVE</span> `;
+    else if (isToday(m) && isUpcoming(m)) statusBadge = `<span class="featured-status status-today" style="font-size:0.65em;padding:2px 8px;">Today</span> `;
+
+    const teamsDisplay = m.t2 ? `${m.t1} vs ${m.t2}${multan ? '<span class="multan-badge">⭐</span>' : ''}` : m.t1;
+
+    html += `
+      <div class="match-card${extraClass}">
+        <div class="match-left">
+          <div class="match-num">Match ${m.num}${m.playoff ? ' · Playoff' : ''}</div>
+          <div class="match-teams">${statusBadge}${teamsDisplay}</div>
+          <div class="match-venue">📍 ${m.venue}</div>
+        </div>
+        <div class="match-right">
+          <div class="match-date">${formatDate(m.date)}</div>
+          <div class="match-time">${formatTime12(m.time)}</div>
+        </div>
+      </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function init() {
+  updateClock();
+  renderFeatured();
+  renderSchedule();
+  setInterval(updateClock, 1000);
+  setInterval(() => { renderFeatured(); renderSchedule(); }, 30000);
+}
+
+init();
+</script>
+</body>
+                                                                  </html>
+  
